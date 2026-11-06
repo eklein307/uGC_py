@@ -1,0 +1,48 @@
+{
+  "_comment": "Register map for an Agilent 990 Micro GC (PRO license). Run `python ugc_modbus.py table` to print the matching PROstation Modbus table, enter or import it in PROstation (Modbus tab -> Registers setup), and download it to the instrument. Process settings: protocol MODICON, Shift Modbus addresses = No.",
+
+  "connection": {
+    "type": "tcp",
+    "host": "192.168.100.100",
+    "port": 502,
+    "unit_id": 1,
+    "timeout": 3,
+    "_serial_example": {"type": "rtu", "serial_port": "COM3", "baudrate": 9600, "parity": "N", "stopbits": 1, "bytesize": 8, "unit_id": 1}
+  },
+
+  "address_offset": 0,
+  "float_word_order": "normal",
+
+  "trigger":  { "table": "coil",     "address": 100, "_param": "0 Start Run (Execute Cmd, MB)" },
+  "new_data": { "table": "discrete", "address": 100, "_param": "2201 Sync: Data available with reset (Bit, MB)" },
+
+  "run_settings": {
+    "run_type":                { "table": "holding", "address": 200, "_param": "60 Set Manual Run RunType: 0 analysis, 1 calibration, 2 blank, 3 verification" },
+    "calibration_level":       { "table": "holding", "address": 201, "_param": "61 Set Manual Run Calib. Level: 1-8" },
+    "stream_position":         { "table": "holding", "address": 202, "_param": "62 Set Manual Run Stream Pos.: 1-64 (stream selector valve)" },
+    "current_stream_position": { "table": "holding", "address": 203, "_param": "58 Read Current Stream Position" }
+  },
+
+  "run_info": {
+    "stream_position":    { "table": "holding",  "address": 204, "_param": "2205 Application: Stream Position (stream used by last run)" },
+    "stream_position_ok": { "table": "discrete", "address": 101, "_param": "2206 Application: Stream Position OK (valve switched correctly)" }
+  },
+
+  "peaks": {
+    "table": "holding",
+    "max_peaks": 20,
+    "fields": [
+      { "name": "retention_time_min", "type": "float", "parameter_id": 1219, "description": "Int.Rep.All: Retention Time (min)" },
+      { "name": "area",               "type": "float", "parameter_id": 1203, "description": "Int.Rep.All: Peak Area" },
+      { "name": "height",             "type": "float", "parameter_id": 1204, "description": "Int.Rep.All: Peak Height" },
+      { "name": "amount",             "type": "float", "parameter_id": 1205, "description": "Int.Rep.All: Amount" },
+      { "name": "width",              "type": "float", "parameter_id": 1207, "description": "Int.Rep.All: Peak Width" }
+    ],
+    "channels": [
+      { "channel": 1, "name": "Channel 1", "count_address": 1000, "base_address": 1100 },
+      { "channel": 2, "name": "Channel 2", "count_address": 1001, "base_address": 1300 },
+      { "channel": 3, "name": "Channel 3", "count_address": 1002, "base_address": 1500 },
+      { "channel": 4, "name": "Channel 4", "count_address": 1003, "base_address": 1700 }
+    ]
+  }
+}
